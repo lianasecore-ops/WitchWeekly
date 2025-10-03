@@ -1,0 +1,308 @@
+/* === THEME (pink scheme) === */
+:root{
+  --bg:#0c0612;
+  --ink:#fff;
+  --muted:#d9d2ea;
+  --glow:#ff2e9b;        /* your pink */
+  --glow-soft:#ff73b9;   /* lighter pink for gradients */
+  --panel:#0f0a19;
+  --tile:#09070e;
+}
+
+/* === RESET === */
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Montserrat",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+
+/* === STAGE & FRAME === */
+.stage{ min-height:100svh; display:grid; place-items:center; padding:clamp(12px,2vw,24px); }
+.frame{
+  position:relative; height:92svh; aspect-ratio:3/4; max-height:980px;
+  border:1px solid rgba(255,255,255,.15); box-shadow:0 30px 80px rgba(0,0,0,.45);
+  overflow:hidden; background:var(--panel);
+}
+
+/* Cover art */
+.art{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:center;
+  filter:contrast(1.05) saturate(1.05) brightness(.95); }
+
+/* Links (pink hover) */
+a{ color:var(--ink); text-decoration:none; }
+a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:translateY(-1px); }
+
+/* Masthead */
+.logo{
+  position:absolute; left:50%; top:0; transform:translateX(-50%);
+  font-family:"Bodoni Moda","Playfair Display","Cinzel",serif;
+  font-weight:500; letter-spacing:-.01em;
+  font-size:clamp(40px, 6vmin, 96px);
+  line-height:.92;
+  text-shadow:0 2px 0 rgba(0,0,0,.35), 0 24px 48px rgba(0,0,0,.5);
+  mix-blend-mode:screen;
+}
+
+/* Ribbon — PINK gradient + your rotation */
+.ribbon{
+  position:absolute; left:2.2%; top:2%;
+  font:800 clamp(9px,1.2vw,12px)/1 "Montserrat",sans-serif;
+  letter-spacing:.12em; text-transform:uppercase;
+  background:linear-gradient(90deg, var(--glow), var(--glow-soft));
+  padding:.5rem .9rem; border-radius:4px;
+  box-shadow:0 8px 20px rgba(0,0,0,.35);
+  transform: rotate(333deg);
+}
+
+/* Feature line */
+.feature{
+  position:absolute; right:6%; top:35%; text-align:right; max-width:44%;
+  display:flex; gap:.6ch; align-items:baseline;
+}
+.kicker{
+  font:800 clamp(9px,1.2vw,12px)/1 "Montserrat";
+  letter-spacing:.25em; text-transform:uppercase; white-space:nowrap;
+  color:var(--ink);
+  text-shadow:0 0 10px rgba(255,46,155,.45);
+}
+.feature-name{
+  margin:.25rem 0 0; white-space:nowrap;
+  font-family:"Cinzel","Bodoni Moda","Playfair Display",serif;
+  font-weight:900; letter-spacing:.02em;
+  font-size:clamp(18px, 2.6vmin, 40px);
+  line-height:1;
+  text-shadow:0 4px 22px rgba(0,0,0,.45);
+}
+
+/* Right column coverlines */
+.right-col{ position:absolute; right:4.5%; bottom:10%;
+  display:flex; flex-direction:column; gap:.6rem; max-width:44%; }
+.coverline{
+  font-family:"Playfair Display","Bodoni Moda",serif;
+  font-weight:900; letter-spacing:.01em; font-size:clamp(14px,2.3vw,28px);
+}
+.coverline .sub{
+  display:block; color:var(--muted);
+  font:800 clamp(9px,1.3vw,13px)/1.2 "Montserrat";
+}
+
+/* Left mini blurbs */
+.left-col{ position:absolute; left:4.5%; bottom:12%;
+  display:flex; flex-direction:column; gap:.45rem; max-width:42%; }
+.mini{ font:900 clamp(12px, 2vw, 20px)/1.1 "Playfair Display",serif; }
+
+/* Barcode */
+.barcode{
+  position:absolute; right:4.5%; top:12%;
+  width:110px; height:62px; background:#fff; color:#000;
+  display:grid; place-items:end center; padding:.25rem; border-radius:3px;
+}
+.barcode .bar{
+  position:absolute; inset:8px 10px 20px 10px;
+  background:repeating-linear-gradient(90deg,#000 0 2px,transparent 2px 5px);
+}
+.barcode .digits{ font:700 10px/1 "Montserrat",sans-serif; z-index:1; }
+
+/* ---------- FLIP HELPERS ---------- */
+.mag-page{ position:absolute; inset:0; backface-visibility:hidden; will-change:transform,opacity; }
+.mag-page:not(.is-active){ opacity:0; pointer-events:none; }
+.mag-page.turn-out-right{ transform-origin:right center; animation:magOutR .52s ease forwards; }
+.mag-page.turn-in-right { transform-origin:right center; animation:magInR  .52s ease forwards; }
+.mag-page.turn-out-left { transform-origin:left center; animation:magOutL .52s ease forwards; }
+.mag-page.turn-in-left  { transform-origin:left center; animation:magInL  .52s ease forwards; }
+@keyframes magOutR{ from{transform:perspective(1400px) rotateY(0);opacity:1} to{transform:perspective(1400px) rotateY(-95deg);opacity:0} }
+@keyframes magInR { from{transform:perspective(1400px) rotateY(95deg);opacity:0}  to{transform:perspective(1400px) rotateY(0);opacity:1} }
+@keyframes magOutL{ from{transform:perspective(1400px) rotateY(0);opacity:1} to{transform:perspective(1400px) rotateY(95deg);opacity:0} }
+@keyframes magInL { from{transform:perspective(1400px) rotateY(-95deg);opacity:0} to{transform:perspective(1400px) rotateY(0);opacity:1} }
+
+/* ================== PAGE 2 — FEATURE SPREAD ================== */
+.p2{
+  position:absolute; inset:0; background:var(--panel); color:var(--ink);
+  padding:clamp(18px,2.6vw,36px) clamp(22px,3vw,44px);
+  display:grid; grid-template-rows:auto auto 1fr auto; gap:clamp(10px,1.6vw,18px);
+}
+.p2-head{ display:grid; gap:.35rem; }
+.p2-tag{ font:800 clamp(9px,1.1vw,12px)/1 "Montserrat"; letter-spacing:.22em; text-transform:uppercase; opacity:.9; }
+.p2-hed{ margin:0; font-family:"Cinzel","Bodoni Moda","Playfair Display",serif; font-weight:900; letter-spacing:.01em; font-size:clamp(26px,4.6vw,56px); line-height:1.02; }
+.p2-dek{ color:var(--muted); font:800 clamp(11px,1.4vw,14px)/1.35 "Montserrat"; margin:0; }
+.p2-meta{ font:800 clamp(9px,1.1vw,12px)/1 "Montserrat"; letter-spacing:.16em; opacity:.7; text-transform:uppercase; }
+
+.p2-rule{ height:1px; background:linear-gradient(90deg, rgba(255,255,255,.25), rgba(255,255,255,0)); margin:.6rem 0 .2rem; }
+
+.p2-cols{ column-count:2; column-gap:clamp(18px,2.6vw,36px); }
+.p2-cols p{ margin:.6rem 0; font:600 clamp(12px,1.35vw,15px)/1.6 "Montserrat",system-ui; color:#e9e6f3; }
+.p2-cols .dropcap:first-letter{ float:left; font-family:"Bodoni Moda","Playfair Display",serif; font-weight:900; font-size:3.1em; line-height:.85; padding:.04em .15em 0 0; color:#fff; text-shadow:0 6px 22px rgba(0,0,0,.35); }
+
+.p2-card{ break-inside:avoid; width:48%; border-radius:10px; overflow:hidden; background:#0b0813; box-shadow:0 10px 24px rgba(0,0,0,.28); margin:.2rem 0 .8rem; }
+.p2-card img{ display:block; width:100%; height:auto; aspect-ratio:4/3; object-fit:cover; }
+.p2-card .cap{ padding:.45rem .6rem; font:700 clamp(10px,1.1vw,12px)/1.2 "Montserrat"; color:#ffe6f2; opacity:.95; }
+.p2-card.right{ float:right; margin-left:1rem; }
+.p2-card.left{ float:left; margin-right:1rem; }
+
+.p2-quote{ break-inside:avoid; margin:1rem 0; padding:.6rem .8rem; border-left:4px solid rgba(255,255,255,.25);
+  font-family:"Playfair Display","Bodoni Moda",serif; font-weight:900; font-size:clamp(18px,2.6vw,28px); line-height:1.2; color:#fff; }
+.p2-quote .mark{ font-size:1.2em; vertical-align:-.15em; opacity:.8; margin-right:.2em; }
+
+.p2-strip{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(10px,1.5vw,14px); }
+.p2-strip figure{ margin:0; border-radius:10px; overflow:hidden; box-shadow:0 10px 24px rgba(0,0,0,.28); background:#0b0813; }
+.p2-strip img{ width:100%; height:100%; object-fit:cover; aspect-ratio:1/1; display:block; }
+.p2-strip .cap{ padding:.4rem .55rem; font:700 clamp(10px,1.1vw,12px)/1.2 "Montserrat"; color:#ffd9ee; opacity:.95; }
+
+/* ================== PAGE 3 — GLOSSY MAG SPREAD ================== */
+.p3{
+  position:absolute; inset:0; background:var(--panel); color:var(--ink);
+  padding:clamp(18px,2.6vw,36px);
+  display:grid; grid-template-rows:auto 1fr; gap:clamp(12px,1.8vw,18px);
+}
+.p3-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:16px; }
+.p3-tag{ font:800 clamp(9px,1.1vw,12px)/1 "Montserrat"; letter-spacing:.22em; text-transform:uppercase; opacity:.9; }
+.p3-hed{ margin:0; font-family:"Cinzel","Bodoni Moda","Playfair Display",serif; font-weight:900; letter-spacing:.01em; font-size:clamp(24px,4.4vw,52px); line-height:1.04; }
+.p3-dek{ color:var(--muted); font:800 clamp(11px,1.4vw,14px)/1.35 "Montserrat"; }
+.p3-page{ font:800 clamp(9px,1.1vw,12px)/1 "Montserrat"; letter-spacing:.18em; opacity:.7; }
+
+/* NEW big layout */
+.p3-grid.p3-magazine{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap:clamp(16px,2.2vw,24px);
+  grid-template-areas:
+    "HERO HERO"
+    "SIDEA SIDEB";
+}
+.tile{ position:relative; border-radius:12px; overflow:hidden; background:var(--tile);
+  box-shadow:0 20px 48px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.05);
+}
+.tile img{ width:100%; height:100%; object-fit:cover; display:block;
+  filter:contrast(1.05) saturate(1.05) brightness(.95);
+}
+.tile::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.45) 72%);
+  pointer-events:none;
+}
+/* Pink meta bar/badge */
+.tile .meta{
+  position:absolute; left:12px; right:12px; bottom:10px;
+  display:flex; justify-content:space-between; gap:8px;
+  font:800 clamp(10px,1.2vw,12px)/1 "Montserrat";
+  letter-spacing:.18em; text-transform:uppercase;
+  color:#ffe7f2; opacity:.98;
+  text-shadow:0 2px 10px rgba(0,0,0,.65), 0 0 14px var(--glow);
+  border-bottom:2px solid var(--glow);
+  padding-bottom:6px;
+}
+
+/* BIG sizes = real-mag vibe */
+.tile.HERO{ grid-area:HERO; aspect-ratio: 21/9; }  /* wide panorama */
+.tile.SIDE-A{ grid-area:SIDEA; aspect-ratio: 4/5; } /* tall portrait */
+.tile.SIDE-B{ grid-area:SIDEB; aspect-ratio: 4/5; }
+
+/* Hover pop (soft pink glow) */
+.tile:hover{ box-shadow:0 28px 64px rgba(0,0,0,.5), 0 0 22px rgba(255,46,155,.25); }
+
+/* Sections below page */
+.section{ max-width:1100px; margin:0 auto; padding:56px 16px; color:#ddd; }
+
+/* --- PINK SCHEME FINAL OVERRIDES --- */
+
+/* kill default purple visited links */
+a:link,
+a:visited { color: var(--ink); }         /* white text */
+a:hover    { text-shadow: 0 0 10px #ff2e9b, 0 0 24px #ff2e9b; }
+
+/* make muted text pink-tinted instead of lavender */
+:root{
+  --muted: #ffd9ee;        /* soft pink for subheads/captions */
+  --glow: #ff2e9b;         /* main hot pink */
+  --glow-soft: #ff73b9;    /* lighter pink for gradients */
+}
+
+/* swap *any* remaining purple-ish accents to pink */
+.ribbon { background: linear-gradient(90deg, var(--glow), var(--glow-soft)); }
+.p2-card .cap,
+.p2-strip .cap,
+.tile .meta { color: #ffe7f2; }
+
+/* safety: if any old CSS used hardcoded purple, override them */
+[class*="purple"],
+.violet,
+.lavender { color: #ff2e9b !important; }
+
+/* optional: give links a subtle pink underline on hover for extra vibe */
+a:hover { text-decoration-color: #ff2e9b; text-decoration-thickness: 2px; }
+
+/* ==== FINAL PINK-LOCK OVERRIDES (drop at end of styles.css) ==== */
+
+/* your exact pink */
+:root{
+  --glow: #ff2e9b;        /* main hot pink */
+  --glow-soft: #ff2e9b;   /* keep solid pink, no purple blend */
+  --muted: #ffe1f0;       /* soft pink tint for subs/captions (not purple) */
+}
+
+/* kill browser purple visited color */
+a:link,
+a:visited { color: var(--ink); }
+a:hover    { text-shadow: 0 0 10px var(--glow), 0 0 24px var(--glow); }
+
+/* ribbon = solid pink (no purple gradient) + your rotation */
+.ribbon{
+  background: var(--glow) !important;
+  transform: rotate(333deg) !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,.35), 0 0 14px rgba(255,46,155,.45) !important;
+}
+
+/* cover feature line */
+.kicker{
+  color: var(--ink) !important;
+  text-shadow: 0 0 12px rgba(255,46,155,.45) !important;
+}
+.feature-name{
+  text-shadow:
+    0 4px 22px rgba(0,0,0,.45),
+    0 0 18px rgba(255,46,155,.25) !important;
+}
+
+/* right column subs + captions -> pink-tinted (not lavender) */
+.coverline .sub,
+.p2-card .cap,
+.p2-strip .cap,
+.tile .meta{
+  color: #ffe7f2 !important;
+}
+
+/* editorial badges + accents -> pink */
+.tile .meta{
+  border-bottom: 2px solid var(--glow) !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,.6), 0 0 14px var(--glow) !important;
+}
+
+/* quotes + rules with a pink whisper (still classy) */
+.p2-quote{ border-left-color: rgba(255,46,155,.45) !important; }
+.p2-rule{ background: linear-gradient(90deg, rgba(255,255,255,.25), rgba(255,255,255,0)) !important; }
+
+/* hover vibe across the mag */
+a:hover,
+.tile:hover{
+  box-shadow: 0 28px 64px rgba(0,0,0,.5), 0 0 22px rgba(255,46,155,.25) !important;
+  text-shadow: 0 0 10px var(--glow), 0 0 24px var(--glow) !important;
+}
+
+/* nuke any hard-coded purples if they slipped in anywhere */
+[class*="purple"], .violet, .lavender { color: var(--glow) !important; }
+/* === SMALL TEXT HOT-PINK GLOW === */
+.tagline,
+.coverline .sub,
+.p2-card .cap,
+.p2-strip .cap,
+.tile .meta,
+.kicker,
+.p2-quote {
+  color: #ff2e9b !important;
+  text-shadow: 0 0 10px #ff2e9b, 0 0 20px rgba(255,46,155,0.7) !important;
+}
+
