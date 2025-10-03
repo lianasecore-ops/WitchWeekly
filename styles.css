@@ -268,3 +268,14 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
 #goes-rogue               { transform: translate(-1.5px, -184px) rotate(0deg);    will-change: transform; }
 #dorothy-davis            { transform: translate(-3.5px, -54px) rotate(0deg);     will-change: transform; }
 #mag-page-1 .barcode      { transform: translate(11px, 556px) rotate(0deg);       will-change: transform; }
+
+.feature, .coverline, .masthead {
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.65);
+}
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(0,0,0,0) 65%, rgba(0,0,0,0.55) 100%);
+  pointer-events: none;
+}
