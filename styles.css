@@ -1,3 +1,5 @@
+/* styles.css (your sheet with fixes written in) */
+
 /* === THEME (pink scheme) === */
 :root{
   --bg:#0c0612;
@@ -46,7 +48,7 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   mix-blend-mode:screen;
 }
 
-/* Ribbon — PINK gradient + your rotation */
+/* Ribbon — PINK (NO transform here; rotation handled by JS) */
 .ribbon{
   position:absolute; left:2.2%; top:2%;
   font:800 clamp(9px,1.2vw,12px)/1 "Montserrat",sans-serif;
@@ -54,7 +56,7 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   background:linear-gradient(90deg, var(--glow), var(--glow-soft));
   padding:.5rem .9rem; border-radius:4px;
   box-shadow:0 8px 20px rgba(0,0,0,.35);
-  transform: rotate(333deg);
+  transform-origin:center; /* keeps drag natural while rotated */
 }
 
 /* Feature line */
@@ -197,9 +199,9 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
 }
 
 /* BIG sizes = real-mag vibe */
-.tile.HERO{ grid-area:HERO; aspect-ratio: 21/9; }  /* wide panorama */
-.tile.SIDE-A{ grid-area:SIDEA; aspect-ratio: 4/5; } /* tall portrait */
-.tile.SIDE-B{ grid-area:SIDEB; aspect-ratio: 4/5; }
+.tile.HERO{ grid-area:HERO; aspect-ratio: 21/9; }
+.tile.SIDE-A{ grid-area:SIDEA; aspect-ratio: 4/5; }
+.tile.SIDE-B{ grid-area:SIDEB; }
 
 /* Hover pop (soft pink glow) */
 .tile:hover{ box-shadow:0 28px 64px rgba(0,0,0,.5), 0 0 22px rgba(255,46,155,.25); }
@@ -208,17 +210,15 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
 .section{ max-width:1100px; margin:0 auto; padding:56px 16px; color:#ddd; }
 
 /* --- PINK SCHEME FINAL OVERRIDES --- */
-
-/* kill default purple visited links */
 a:link,
-a:visited { color: var(--ink); }         /* white text */
+a:visited { color: var(--ink); }
 a:hover    { text-shadow: 0 0 10px #ff2e9b, 0 0 24px #ff2e9b; }
 
 /* make muted text pink-tinted instead of lavender */
 :root{
-  --muted: #ffd9ee;        /* soft pink for subheads/captions */
-  --glow: #ff2e9b;         /* main hot pink */
-  --glow-soft: #ff73b9;    /* lighter pink for gradients */
+  --muted: #ffd9ee;
+  --glow: #ff2e9b;
+  --glow-soft: #ff73b9;
 }
 
 /* swap *any* remaining purple-ish accents to pink */
@@ -232,28 +232,24 @@ a:hover    { text-shadow: 0 0 10px #ff2e9b, 0 0 24px #ff2e9b; }
 .violet,
 .lavender { color: #ff2e9b !important; }
 
-/* optional: give links a subtle pink underline on hover for extra vibe */
+/* optional: pink underline on hover */
 a:hover { text-decoration-color: #ff2e9b; text-decoration-thickness: 2px; }
 
-/* ==== FINAL PINK-LOCK OVERRIDES (drop at end of styles.css) ==== */
-
-/* your exact pink */
+/* ==== FINAL PINK-LOCK OVERRIDES ==== */
 :root{
-  --glow: #ff2e9b;        /* main hot pink */
-  --glow-soft: #ff2e9b;   /* keep solid pink, no purple blend */
-  --muted: #ffe1f0;       /* soft pink tint for subs/captions (not purple) */
+  --glow: #ff2e9b;
+  --glow-soft: #ff2e9b;
+  --muted: #ffe1f0;
 }
-
-/* kill browser purple visited color */
 a:link,
 a:visited { color: var(--ink); }
 a:hover    { text-shadow: 0 0 10px var(--glow), 0 0 24px var(--glow); }
 
-/* ribbon = solid pink (no purple gradient) + your rotation */
+/* ribbon = solid pink; NO transform here (JS controls translate+rotate) */
 .ribbon{
   background: var(--glow) !important;
-  transform: rotate(333deg) !important;
   box-shadow: 0 8px 20px rgba(0,0,0,.35), 0 0 14px rgba(255,46,155,.45) !important;
+  transform-origin:center !important;
 }
 
 /* cover feature line */
@@ -294,7 +290,8 @@ a:hover,
 
 /* nuke any hard-coded purples if they slipped in anywhere */
 [class*="purple"], .violet, .lavender { color: var(--glow) !important; }
-/* === SMALL TEXT HOT-PINK GLOW === */
+
+/* small text hot-pink glow */
 .tagline,
 .coverline .sub,
 .p2-card .cap,
@@ -306,3 +303,8 @@ a:hover,
   text-shadow: 0 0 10px #ff2e9b, 0 0 20px rgba(255,46,155,0.7) !important;
 }
 
+/* selection outline for draggable items */
+.draggable:focus-visible {
+  outline: 2px dashed rgba(255, 46, 155, .7);
+  outline-offset: -2px;
+}
