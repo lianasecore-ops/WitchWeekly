@@ -30,11 +30,14 @@ body{
 }
 
 /* Cover art */
-.art{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:center;
-  filter:contrast(1.05) saturate(1.05) brightness(.95); }
+.art{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:contain; object-position:center;
+  filter:contrast(1.05) saturate(1.05) brightness(.95);
+}
 
 /* Links (pink hover) */
-a{ color:var(--ink); text-decoration:none; }
+a{ color:var(--ink); text-decoration:none; transition:transform .12s ease; }
 a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:translateY(-1px); }
 
 /* Masthead */
@@ -48,7 +51,7 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   mix-blend-mode:screen;
 }
 
-/* Ribbon — styling only; JS handles translate+rotate */
+/* Ribbon — styling only; JS/locked CSS handles translate+rotate */
 .ribbon{
   position:absolute; left:2.2%; top:2%;
   font:800 clamp(9px,1.2vw,12px)/1 "Montserrat",sans-serif;
@@ -68,7 +71,7 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   font:800 clamp(9px,1.2vw,12px)/1 "Montserrat";
   letter-spacing:.25em; text-transform:uppercase; white-space:nowrap;
   color:var(--ink);
-  text-shadow:0 0 10px rgba(255,46,155,.45);
+  text-shadow:0 0 10px rgba(0,0,0,.35);
 }
 .feature-name{
   margin:.25rem 0 0; white-space:nowrap;
@@ -91,7 +94,7 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   font:800 clamp(9px,1.3vw,13px)/1.2 "Montserrat";
 }
 
-/* Left mini blurbs (unique classes so positions persist separately) */
+/* Left mini blurbs */
 .left-col{ position:absolute; left:4.5%; bottom:12%;
   display:flex; flex-direction:column; gap:.45rem; max-width:42%; }
 .mini{ font:900 clamp(12px, 2vw, 20px)/1.1 "Playfair Display",serif; }
@@ -205,37 +208,43 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
 
 .section{ max-width:1100px; margin:0 auto; padding:56px 16px; color:#ddd; }
 
-/* --- FINAL OVERRIDES (keep pink) --- */
-a:link,
-a:visited { color: var(--ink); }
-a:hover    { text-shadow: 0 0 10px #ff2e9b, 0 0 24px #ff2e9b; }
-
+/* --- FINAL OVERRIDES (pink accents exactly as approved) --- */
 :root{
-  --muted: #ffd9ee;
+  --muted: #ffe1f0;
   --glow: #ff2e9b;
   --glow-soft: #ff73b9;
 }
 
-.ribbon { background: linear-gradient(90deg, var(--glow), var(--glow-soft)); }
-.p2-card .cap,
-.p2-strip .cap,
-.tile .meta { color: #ffe7f2; }
-
-[class*="purple"], .violet, .lavender { color: #ff2e9b !important; }
-a:hover { text-decoration-color: #ff2e9b; text-decoration-thickness: 2px; }
-
-:root{
-  --glow: #ff2e9b;
-  --glow-soft: #ff2e9b;
-  --muted: #ffe1f0;
+/* Featuring kicker -> hot pink */
+.feature .kicker{
+  color: var(--glow) !important;
+  text-shadow: 0 0 12px rgba(255,46,155,.45) !important;
 }
 
-.draggable:focus-visible {
-  outline: 2px dashed rgba(255, 46, 155, .7);
-  outline-offset: -2px;
+/* Right column headings:
+   - Potion + Quiz titles = WHITE
+   - Prime title = HOT PINK
+   - All .sub lines = HOT PINK */
+.right-col .coverline[href="#potion"],
+.right-col .coverline[href="#quiz"]{
+  color: var(--ink) !important;
+}
+.right-col .coverline[href="#prime"]{
+  color: var(--glow) !important;
+}
+.right-col .coverline .sub{
+  color: var(--glow) !important;
+  text-shadow: 0 0 10px rgba(255,46,155,.5) !important;
+}
+/* Make link states inherit so hover/visited don’t flip colors */
+.right-col .coverline:link,
+.right-col .coverline:visited,
+.right-col .coverline:hover{
+  color: inherit !important;
+  text-decoration: none !important;
 }
 
-/* ===== QUIZ MODAL ===== */
+/* ===== QUIZ MODAL (kept for future use) ===== */
 #quiz-modal::backdrop { background: rgba(0,0,0,.6); }
 .quiz-card{
   min-width: 320px;
@@ -249,9 +258,8 @@ a:hover { text-decoration-color: #ff2e9b; text-decoration-thickness: 2px; }
 .quiz-result{ margin:10px 0 0; color:#ffb3d3; font-weight:800; letter-spacing:.08em; }
 
 /* === FINAL LOCKED POSITIONS — PAGE 1 (cover) === */
-/* paste these at the very end of styles.css */
-
-#mag-page-1 .logo         { transform: translate(-203.84px, 14.5px) rotate(0deg); will-change: transform; }
+/* (logo scale baked into this transform so it’s bigger but stays placed) */
+#mag-page-1 .logo         { transform: translate(-203.84px, 14.5px) rotate(0deg) scale(1.15); transform-origin:center; will-change: transform; }
 #mag-page-1 .ribbon       { transform: translate(-31.5px, 5px) rotate(333deg);    will-change: transform; }
 #mag-page-1 .feature      { transform: translate(82.5px, -99px) rotate(0deg);     will-change: transform; }
 #mag-page-1 .feature-name { transform: translate(-136px, 57.5px) rotate(0deg);    will-change: transform; }

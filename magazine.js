@@ -207,11 +207,9 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.addEventListener('click', async () => {
         const lines = ['/* === Exported from Witch Weekly (Page 1 placements) === */'];
         document.querySelectorAll('#mag-page-1 .draggable').forEach(el => {
-          const k = keyFor(el);
           const x = parseFloat(el.getAttribute('data-x')) || 0;
           const y = parseFloat(el.getAttribute('data-y')) || 0;
           const rot = parseFloat(el.getAttribute('data-rot')) || 0;
-          // Prefer IDs in the selector for stable CSS
           let sel = el.id ? `#${el.id}` : `#mag-page-1 ${[...el.classList].filter(c=>c!=='draggable').map(c=>'.'+c).join('') || el.tagName.toLowerCase()}`;
           lines.push(`${sel} { transform: translate(${x}px, ${y}px) rotate(${rot}deg); }`);
         });
