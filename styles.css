@@ -1,12 +1,12 @@
-/* styles.css (your sheet with fixes written in) */
+/* styles.css */
 
 /* === THEME (pink scheme) === */
 :root{
   --bg:#0c0612;
   --ink:#fff;
   --muted:#d9d2ea;
-  --glow:#ff2e9b;        /* your pink */
-  --glow-soft:#ff73b9;   /* lighter pink for gradients */
+  --glow:#ff2e9b;
+  --glow-soft:#ff73b9;
   --panel:#0f0a19;
   --tile:#09070e;
 }
@@ -48,7 +48,7 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   mix-blend-mode:screen;
 }
 
-/* Ribbon — PINK (NO transform here; rotation handled by JS) */
+/* Ribbon — styling only; JS handles translate+rotate */
 .ribbon{
   position:absolute; left:2.2%; top:2%;
   font:800 clamp(9px,1.2vw,12px)/1 "Montserrat",sans-serif;
@@ -56,7 +56,7 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   background:linear-gradient(90deg, var(--glow), var(--glow-soft));
   padding:.5rem .9rem; border-radius:4px;
   box-shadow:0 8px 20px rgba(0,0,0,.35);
-  transform-origin:center; /* keeps drag natural while rotated */
+  transform-origin:center;
 }
 
 /* Feature line */
@@ -91,10 +91,12 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   font:800 clamp(9px,1.3vw,13px)/1.2 "Montserrat";
 }
 
-/* Left mini blurbs */
+/* Left mini blurbs (unique classes so positions persist separately) */
 .left-col{ position:absolute; left:4.5%; bottom:12%;
   display:flex; flex-direction:column; gap:.45rem; max-width:42%; }
 .mini{ font:900 clamp(12px, 2vw, 20px)/1.1 "Playfair Display",serif; }
+.mini-rogue{}
+.mini-dorothy{}
 
 /* Barcode */
 .barcode{
@@ -108,7 +110,7 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
 }
 .barcode .digits{ font:700 10px/1 "Montserrat",sans-serif; z-index:1; }
 
-/* ---------- FLIP HELPERS ---------- */
+/* ---------- PAGE SYSTEM ---------- */
 .mag-page{ position:absolute; inset:0; backface-visibility:hidden; will-change:transform,opacity; }
 .mag-page:not(.is-active){ opacity:0; pointer-events:none; }
 .mag-page.turn-out-right{ transform-origin:right center; animation:magOutR .52s ease forwards; }
@@ -120,7 +122,7 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
 @keyframes magOutL{ from{transform:perspective(1400px) rotateY(0);opacity:1} to{transform:perspective(1400px) rotateY(95deg);opacity:0} }
 @keyframes magInL { from{transform:perspective(1400px) rotateY(-95deg);opacity:0} to{transform:perspective(1400px) rotateY(0);opacity:1} }
 
-/* ================== PAGE 2 — FEATURE SPREAD ================== */
+/* ================== PAGE 2 ================== */
 .p2{
   position:absolute; inset:0; background:var(--panel); color:var(--ink);
   padding:clamp(18px,2.6vw,36px) clamp(22px,3vw,44px);
@@ -153,7 +155,7 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
 .p2-strip img{ width:100%; height:100%; object-fit:cover; aspect-ratio:1/1; display:block; }
 .p2-strip .cap{ padding:.4rem .55rem; font:700 clamp(10px,1.1vw,12px)/1.2 "Montserrat"; color:#ffd9ee; opacity:.95; }
 
-/* ================== PAGE 3 — GLOSSY MAG SPREAD ================== */
+/* ================== PAGE 3 ================== */
 .p3{
   position:absolute; inset:0; background:var(--panel); color:var(--ink);
   padding:clamp(18px,2.6vw,36px);
@@ -165,7 +167,6 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
 .p3-dek{ color:var(--muted); font:800 clamp(11px,1.4vw,14px)/1.35 "Montserrat"; }
 .p3-page{ font:800 clamp(9px,1.1vw,12px)/1 "Montserrat"; letter-spacing:.18em; opacity:.7; }
 
-/* NEW big layout */
 .p3-grid.p3-magazine{
   display:grid;
   grid-template-columns: 1fr 1fr;
@@ -186,7 +187,6 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   background:linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.45) 72%);
   pointer-events:none;
 }
-/* Pink meta bar/badge */
 .tile .meta{
   position:absolute; left:12px; right:12px; bottom:10px;
   display:flex; justify-content:space-between; gap:8px;
@@ -197,114 +197,66 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   border-bottom:2px solid var(--glow);
   padding-bottom:6px;
 }
-
-/* BIG sizes = real-mag vibe */
 .tile.HERO{ grid-area:HERO; aspect-ratio: 21/9; }
 .tile.SIDE-A{ grid-area:SIDEA; aspect-ratio: 4/5; }
 .tile.SIDE-B{ grid-area:SIDEB; }
 
-/* Hover pop (soft pink glow) */
 .tile:hover{ box-shadow:0 28px 64px rgba(0,0,0,.5), 0 0 22px rgba(255,46,155,.25); }
 
-/* Sections below page */
 .section{ max-width:1100px; margin:0 auto; padding:56px 16px; color:#ddd; }
 
-/* --- PINK SCHEME FINAL OVERRIDES --- */
+/* --- FINAL OVERRIDES (keep pink) --- */
 a:link,
 a:visited { color: var(--ink); }
 a:hover    { text-shadow: 0 0 10px #ff2e9b, 0 0 24px #ff2e9b; }
 
-/* make muted text pink-tinted instead of lavender */
 :root{
   --muted: #ffd9ee;
   --glow: #ff2e9b;
   --glow-soft: #ff73b9;
 }
 
-/* swap *any* remaining purple-ish accents to pink */
 .ribbon { background: linear-gradient(90deg, var(--glow), var(--glow-soft)); }
 .p2-card .cap,
 .p2-strip .cap,
 .tile .meta { color: #ffe7f2; }
 
-/* safety: if any old CSS used hardcoded purple, override them */
-[class*="purple"],
-.violet,
-.lavender { color: #ff2e9b !important; }
-
-/* optional: pink underline on hover */
+[class*="purple"], .violet, .lavender { color: #ff2e9b !important; }
 a:hover { text-decoration-color: #ff2e9b; text-decoration-thickness: 2px; }
 
-/* ==== FINAL PINK-LOCK OVERRIDES ==== */
 :root{
   --glow: #ff2e9b;
   --glow-soft: #ff2e9b;
   --muted: #ffe1f0;
 }
-a:link,
-a:visited { color: var(--ink); }
-a:hover    { text-shadow: 0 0 10px var(--glow), 0 0 24px var(--glow); }
 
-/* ribbon = solid pink; NO transform here (JS controls translate+rotate) */
-.ribbon{
-  background: var(--glow) !important;
-  box-shadow: 0 8px 20px rgba(0,0,0,.35), 0 0 14px rgba(255,46,155,.45) !important;
-  transform-origin:center !important;
-}
-
-/* cover feature line */
-.kicker{
-  color: var(--ink) !important;
-  text-shadow: 0 0 12px rgba(255,46,155,.45) !important;
-}
-.feature-name{
-  text-shadow:
-    0 4px 22px rgba(0,0,0,.45),
-    0 0 18px rgba(255,46,155,.25) !important;
-}
-
-/* right column subs + captions -> pink-tinted (not lavender) */
-.coverline .sub,
-.p2-card .cap,
-.p2-strip .cap,
-.tile .meta{
-  color: #ffe7f2 !important;
-}
-
-/* editorial badges + accents -> pink */
-.tile .meta{
-  border-bottom: 2px solid var(--glow) !important;
-  text-shadow: 0 2px 10px rgba(0,0,0,.6), 0 0 14px var(--glow) !important;
-}
-
-/* quotes + rules with a pink whisper (still classy) */
-.p2-quote{ border-left-color: rgba(255,46,155,.45) !important; }
-.p2-rule{ background: linear-gradient(90deg, rgba(255,255,255,.25), rgba(255,255,255,0)) !important; }
-
-/* hover vibe across the mag */
-a:hover,
-.tile:hover{
-  box-shadow: 0 28px 64px rgba(0,0,0,.5), 0 0 22px rgba(255,46,155,.25) !important;
-  text-shadow: 0 0 10px var(--glow), 0 0 24px var(--glow) !important;
-}
-
-/* nuke any hard-coded purples if they slipped in anywhere */
-[class*="purple"], .violet, .lavender { color: var(--glow) !important; }
-
-/* small text hot-pink glow */
-.tagline,
-.coverline .sub,
-.p2-card .cap,
-.p2-strip .cap,
-.tile .meta,
-.kicker,
-.p2-quote {
-  color: #ff2e9b !important;
-  text-shadow: 0 0 10px #ff2e9b, 0 0 20px rgba(255,46,155,0.7) !important;
-}
-
-/* selection outline for draggable items */
 .draggable:focus-visible {
   outline: 2px dashed rgba(255, 46, 155, .7);
   outline-offset: -2px;
 }
+
+/* ===== QUIZ MODAL ===== */
+#quiz-modal::backdrop { background: rgba(0,0,0,.6); }
+.quiz-card{
+  min-width: 320px;
+  background: #0f0a19; color:#fff;
+  border:1px solid rgba(255,255,255,.14); border-radius:12px;
+  padding:18px; box-shadow:0 24px 64px rgba(0,0,0,.5);
+}
+.quiz-card h3{ margin:0 0 6px 0; font-family:"Cinzel","Bodoni Moda",serif; }
+.quiz-sub{ margin:0 0 12px 0; color:#ffe1f0; font:800 12px/1.3 "Montserrat"; letter-spacing:.12em; text-transform:uppercase; }
+.quiz-q{ display:grid; gap:6px; margin:8px 0 14px; }
+.quiz-result{ margin:10px 0 0; color:#ffb3d3; font-weight:800; letter-spacing:.08em; }
+
+/* === FINAL LOCKED POSITIONS — PAGE 1 (cover) === */
+/* paste these at the very end of styles.css */
+
+#mag-page-1 .logo         { transform: translate(-203.84px, 14.5px) rotate(0deg); will-change: transform; }
+#mag-page-1 .ribbon       { transform: translate(-31.5px, 5px) rotate(333deg);    will-change: transform; }
+#mag-page-1 .feature      { transform: translate(82.5px, -99px) rotate(0deg);     will-change: transform; }
+#mag-page-1 .feature-name { transform: translate(-136px, 57.5px) rotate(0deg);    will-change: transform; }
+#mag-page-1 .right-col    { transform: translate(8.5px, -42px) rotate(0deg);      will-change: transform; }
+#mag-page-1 .left-col     { transform: translate(0px, 0px) rotate(0deg);          will-change: transform; }
+#goes-rogue               { transform: translate(-1.5px, -184px) rotate(0deg);    will-change: transform; }
+#dorothy-davis            { transform: translate(-3.5px, -54px) rotate(0deg);     will-change: transform; }
+#mag-page-1 .barcode      { transform: translate(11px, 556px) rotate(0deg);       will-change: transform; }
