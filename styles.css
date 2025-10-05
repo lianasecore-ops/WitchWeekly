@@ -326,3 +326,15 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
     hyphens: auto;
   }
 }
+.hot-phrase {
+  color: var(--glow) !important;
+  text-shadow: 0 0 12px rgba(255,46,155,.45);
+}
+.right-col .coverline {
+  color: var(--glow) !important;
+  text-shadow: 0 0 12px rgba(255,46,155,.45);
+}
+
+.right-col .coverline .sub {
+  color: var(--glow) !important;
+}
