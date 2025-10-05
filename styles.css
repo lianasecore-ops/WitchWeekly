@@ -302,3 +302,19 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
 .right-col .coverline:hover{
   text-shadow: 0 0 10px var(--glow), 0 0 24px var(--glow);
 }
+/* === Witch Weekly: Locked placements for Page 1 === */
+#mag-page-1 .logo {
+  transform: translate(-258.785px, -27px) rotate(0deg);
+}
+#mag-page-1 .ribbon {
+  transform: translate(-31.5px, 5px) rotate(333deg);
+}
+#mag-page-1 .feature {
+  transform: translate(161px, -49px) rotate(0deg);
+}
+#mag-page-1 .right-col {
+  transform: translate(16.5px, -43px) rotate(0deg);
+}
+#mag-page-1 .left-col {
+  transform: translate(0px, 0px) rotate(0deg);
+}

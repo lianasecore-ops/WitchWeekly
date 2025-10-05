@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
       cur.setAttribute("aria-hidden", "true");
       nxt.classList.remove("turn-in-right", "turn-in-left");
       index = i;
-      // re-apply saved transforms after the flip settles
       restorePositions();
     }, 520);
   }
@@ -51,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const script = document.createElement("script");
   script.src = "https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js";
 
-  // SCOPE: only Page 1 items are draggable (prevents cross-page collisions)
   const DRAGGABLE_SELECTORS = [
     "#mag-page-1 .feature",
     "#mag-page-1 .right-col",
@@ -74,7 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
     el.setAttribute("data-rot", rot);
   }
 
-  // read current transform so default CSS rotation (e.g. ribbon) is preserved
   function readComputedXYR(el) {
     const style = getComputedStyle(el);
     const t = style.transform;
@@ -82,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (t && t !== "none") {
       const m2 = t.match(/matrix\(([^)]+)\)/);
       if (m2) {
-        const [a,b,, ,tx,ty] = m2[1].split(",").map(parseFloat);
+        const [a,b,,,tx,ty] = m2[1].split(",").map(parseFloat);
         x = tx || 0; y = ty || 0;
         rot = Math.round(Math.atan2(b, a) * (180/Math.PI));
       } else {
@@ -101,7 +98,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return { x, y, rot };
   }
 
-  // stable per-element per-page key
   function keyFor(el) {
     const page = el.closest(".mag-page")?.id || "page-unknown";
     if (el.id) return `${page}|#${el.id}`;
@@ -129,12 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   script.onload = () => {
-    // mark draggables (scoped)
     DRAGGABLE_SELECTORS.forEach(sel => {
       document.querySelectorAll(sel).forEach(el => el.classList.add("draggable"));
     });
 
-    // initialize transform from CSS/attributes (e.g. ribbon 333deg), then restore saved
     document.querySelectorAll("#mag-page-1 .draggable").forEach(el => {
       const cur = readComputedXYR(el);
       applyTransform(el, cur.x, cur.y, cur.rot);
@@ -151,7 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // enable drag
     interact("#mag-page-1 .draggable").draggable({
       listeners: {
         start (event) {
@@ -190,8 +183,36 @@ document.addEventListener("DOMContentLoaded", () => {
       saveMap(map);
     });
 
-    // (Export CSS button intentionally removed for launch)
-  }; // ✅ this closes script.onload
+    // === DEV TOOL: Export placements as CSS ===
+    const btn = document.createElement("button");
+    btn.textContent = "Export CSS";
+    Object.assign(btn.style, {
+      position: "fixed",
+      bottom: "20px",
+      right: "20px",
+      padding: "8px 14px",
+      background: "#ff2e9b",
+      color: "#fff",
+      fontSize: "14px",
+      border: "none",
+      borderRadius: "6px",
+      cursor: "pointer",
+      zIndex: "9999"
+    });
+    btn.addEventListener("click", () => {
+      const els = document.querySelectorAll("#mag-page-1 .logo, #mag-page-1 .ribbon, #mag-page-1 .feature, #mag-page-1 .right-col, #mag-page-1 .left-col");
+      let css = "/* === Exported from Witch Weekly (Page 1 placements) === */\n";
+      els.forEach(el => {
+        const t = el.style.transform;
+        if (t) css += `${keyFor(el).split("|")[1]} { transform: ${t}; }\n`;
+      });
+      console.log(css);
+      navigator.clipboard.writeText(css).then(() => {
+        alert("CSS copied to clipboard ✅");
+      });
+    });
+    document.body.appendChild(btn);
+  }; // ✅ closes script.onload
 
   document.body.appendChild(script);
 
@@ -199,15 +220,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
     const a = e.target.closest("a");
     if (!a) return;
-
-    // minis: flip to page 2 (features strip)
     if (a.dataset.goto === "2") {
       e.preventDefault();
       flipTo(1, "right");
       return;
     }
-
-    // coverlines with hashes -> smooth scroll to sections below magazine
     const href = a.getAttribute("href");
     if (href && href.startsWith("#")) {
       const target = document.querySelector(href);
@@ -218,7 +235,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // --- ACTIVE COVERLINES ---
   function setActiveFromHash() {
     const hash = location.hash;
     document.querySelectorAll('.right-col .coverline').forEach(a => {
@@ -237,20 +253,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // === Hot-pink just for two phrases on page 1 ===
 (function () {
-  const ROOT = document.querySelector('#mag-page-1'); // scope to page 1 only
+  const ROOT = document.querySelector('#mag-page-1');
   if (!ROOT) return;
-
-  // Build a case-insensitive regex that also handles Wysteria’s / Wysteria's
   const phrases = [
-    'from coffins to catastrphe',          // current spelling
-    'from coffins to catastrophe',         // in case you fix it
+    'from coffins to catastrphe',
+    'from coffins to catastrophe',
     'the race for wysteria’s newest keepers',
     "the race for wysteria's newest keepers"
   ];
   const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const re  = new RegExp(phrases.map(esc).join('|'), 'gi');
-
-  // Walk text nodes and wrap matches
   const walker = document.createTreeWalker(ROOT, NodeFilter.SHOW_TEXT, {
     acceptNode(node) {
       if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
@@ -258,10 +270,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return NodeFilter.FILTER_ACCEPT;
     }
   });
-
   const targets = [];
   let n; while ((n = walker.nextNode())) { if (re.test(n.nodeValue)) targets.push(n); }
-
   targets.forEach(textNode => {
     const wrapper = document.createElement('span');
     wrapper.innerHTML = textNode.nodeValue.replace(re, m => `<span class="hot">${m}</span>`);
@@ -269,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 })();
 
-/* ======= Witch Weekly: mobile fixed-layout lock (append-only) ======= */
+/* ======= Witch Weekly: mobile fixed-layout lock ======= */
 (function mobileFixedLayout() {
   const DESKTOP_PAGE_WIDTH = 1800;
   (function ensureViewportMeta() {
@@ -284,7 +294,6 @@ document.addEventListener("DOMContentLoaded", () => {
       `width=${DESKTOP_PAGE_WIDTH}, initial-scale=1.0, maximum-scale=1.0, user-scalable=no`
     );
   })();
-
   (function injectNoBoostStyle() {
     if (document.getElementById('ww-mobile-lock-style')) return;
     const style = document.createElement('style');
@@ -292,24 +301,19 @@ document.addEventListener("DOMContentLoaded", () => {
     style.textContent = `html { -webkit-text-size-adjust: 100%; }`;
     document.head.appendChild(style);
   })();
-
   const frame = document.querySelector('.frame');
   if (!frame) return;
-
   queueMicrotask(() => {
     const rect = frame.getBoundingClientRect();
     const BASE_W = Math.max(1, Math.round(rect.width));
     const BASE_H = Math.max(1, Math.round(rect.height));
-
     frame.style.transformOrigin = 'top center';
-
     function fit() {
       const scaleX = (window.innerWidth - 2) / BASE_W;
       const scaleY = (window.innerHeight - 2) / BASE_H;
       const scale = Math.min(scaleX, scaleY, 1);
       frame.style.transform = `scale(${isFinite(scale) ? scale : 1})`;
     }
-
     window.addEventListener('resize', fit, { passive: true });
     window.addEventListener('orientationchange', fit, { passive: true });
     fit();
