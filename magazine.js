@@ -217,6 +217,22 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
+
+  // --- ACTIVE COVERLINES ---
+  function setActiveFromHash() {
+    const hash = location.hash;
+    document.querySelectorAll('.right-col .coverline').forEach(a => {
+      a.classList.toggle('is-active', a.getAttribute('href') === hash);
+    });
+  }
+  window.addEventListener('hashchange', setActiveFromHash);
+  setActiveFromHash();
+  document.querySelectorAll('.right-col .coverline').forEach(a => {
+    a.addEventListener('click', () => {
+      document.querySelectorAll('.right-col .coverline').forEach(x => x.classList.remove('is-active'));
+      a.classList.add('is-active');
+    });
+  });
 });
 
 // === Hot-pink just for two phrases on page 1 ===
@@ -237,7 +253,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Walk text nodes and wrap matches
   const walker = document.createTreeWalker(ROOT, NodeFilter.SHOW_TEXT, {
     acceptNode(node) {
-      // skip empty/whitespace, and anything already inside .hot
       if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
       if (node.parentElement && node.parentElement.closest('.hot')) return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;
@@ -256,9 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /* ======= Witch Weekly: mobile fixed-layout lock (append-only) ======= */
 (function mobileFixedLayout() {
-  // 1) Force a stable viewport width so vw/vmin don’t shrink on phones.
-  //    (Done via JS so you don't edit index.html)
-  const DESKTOP_PAGE_WIDTH = 1800; // pick your “looks perfect on PC” width
+  const DESKTOP_PAGE_WIDTH = 1800;
   (function ensureViewportMeta() {
     let meta = document.querySelector('meta[name="viewport"]');
     if (!meta) {
@@ -266,50 +279,40 @@ document.addEventListener("DOMContentLoaded", () => {
       meta.setAttribute('name', 'viewport');
       document.head.appendChild(meta);
     }
-    // Prevent auto-zoom/font-boost; fix width so CSS clamp(..., vw, ...) stays identical
     meta.setAttribute(
       'content',
       `width=${DESKTOP_PAGE_WIDTH}, initial-scale=1.0, maximum-scale=1.0, user-scalable=no`
     );
   })();
 
-  // 2) Prevent iOS text auto-enlarging (no CSS file edits — inject a tiny style).
   (function injectNoBoostStyle() {
     if (document.getElementById('ww-mobile-lock-style')) return;
     const style = document.createElement('style');
     style.id = 'ww-mobile-lock-style';
-    style.textContent = `
-      html { -webkit-text-size-adjust: 100%; }
-    `;
+    style.textContent = `html { -webkit-text-size-adjust: 100%; }`;
     document.head.appendChild(style);
   })();
 
-  // 3) Scale the whole .frame as one unit on small screens (no reflow).
   const frame = document.querySelector('.frame');
   if (!frame) return;
 
-  // Measure your current PC layout ONCE as the “truth”.
-  // (Use a microtask to ensure styles have applied.)
   queueMicrotask(() => {
     const rect = frame.getBoundingClientRect();
     const BASE_W = Math.max(1, Math.round(rect.width));
     const BASE_H = Math.max(1, Math.round(rect.height));
 
-    // Keep scale origin consistent with magazine feel.
     frame.style.transformOrigin = 'top center';
 
     function fit() {
-      // If the phone screen is smaller than the desktop “truth”, scale down uniformly.
       const scaleX = (window.innerWidth - 2) / BASE_W;
       const scaleY = (window.innerHeight - 2) / BASE_H;
-      const scale = Math.min(scaleX, scaleY, 1); // never upscale past 1 on desktop
+      const scale = Math.min(scaleX, scaleY, 1);
       frame.style.transform = `scale(${isFinite(scale) ? scale : 1})`;
     }
 
     window.addEventListener('resize', fit, { passive: true });
     window.addEventListener('orientationchange', fit, { passive: true });
     fit();
-    // a second pass helps some mobile browsers after address-bar hide/show
     setTimeout(fit, 0);
     setTimeout(fit, 300);
   });

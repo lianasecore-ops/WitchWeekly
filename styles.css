@@ -222,10 +222,7 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   text-shadow: 0 0 12px rgba(255,46,155,.45) !important;
 }
 
-/* Right column headings:
-   - Potion + Quiz titles = WHITE
-   - Prime title = HOT PINK
-   - All .sub lines = HOT PINK */
+/* (keep your earlier rules the same) */
 .right-col .coverline[href="#potion"],
 .right-col .coverline[href="#quiz"]{
   color: var(--ink) !important;
@@ -237,7 +234,6 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   color: var(--glow) !important;
   text-shadow: 0 0 10px rgba(255,46,155,.5) !important;
 }
-/* Make link states inherit so hover/visited don’t flip colors */
 .right-col .coverline:link,
 .right-col .coverline:visited,
 .right-col .coverline:hover{
@@ -280,61 +276,29 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   background: radial-gradient(circle, rgba(0,0,0,0) 65%, rgba(0,0,0,0.55) 100%);
   pointer-events: none;
 }
-/* in your CSS (already ok if you have it) */
 .hot {
   color: var(--glow, #ff2e9b);
   font-weight: 800;
   text-shadow: 0 0 .6em color-mix(in oklab, var(--glow, #ff2e9b), #fff 20%);
 }
 
-/* === Global responsive scaling for ALL pages === /
-:root{
-  / your design size in pixels (whatever you laid out against) /
-  --design-w: 1080;
-  --design-h: 1440;
-}
+/* (keep your commented responsive block exactly as-is) */
 
-/ Your page container (use the class that wraps a page) /
-.frame{
-  width: var(--design-w);
-  height: var(--design-h);
-  transform-origin: top left;          / important so scaling is predictable /
-}
+/* ======= NEW: minimal rules you asked for ======= */
 
-/ Center the page and prevent mobile overflow /
-.stage{ 
-  min-height: 100svh;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-
-/ Responsive: scale the whole frame to fit the mobile viewport /
-@media (max-width: 900px){
-  .frame{
-    / Fit by whichever side is tighter: width or height /
-    transform: scale(
-      calc(min(100vw / var(--design-w), 100svh / var(--design-h)))
-    );
-  }
-}
-
-/ Optional: nicer text wrapping on narrow screens (helps long titles) */
-@media (max-width: 600px){
-  .frame h1, .frame .title, .frame .logo{
-    text-wrap: balance;
-    hyphens: auto;
-  }
-}
-.hot-phrase {
-  color: var(--glow) !important;
+/* Only the specific words in the left blurb */
+.hot-phrase{
+  color: var(--glow);
   text-shadow: 0 0 12px rgba(255,46,155,.45);
-}
-.right-col .coverline {
-  color: var(--glow) !important;
-  text-shadow: 0 0 12px rgba(255,46,155,.45);
+  font-weight: 800;
 }
 
-.right-col .coverline .sub {
-  color: var(--glow) !important;
+/* Make all three right-column titles hot pink by default… */
+.right-col .coverline{
+  color: var(--glow) !important; /* beats earlier 'inherit' */
+}
+
+/* …and glow on hover (same look as other links) */
+.right-col .coverline:hover{
+  text-shadow: 0 0 10px var(--glow), 0 0 24px var(--glow);
 }
