@@ -45,7 +45,8 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   position:absolute; left:50%; top:0; transform:translateX(-50%);
   font-family:"Bodoni Moda","Playfair Display","Cinzel",serif;
   font-weight:500; letter-spacing:-.01em;
-  font-size:clamp(40px, 6vmin, 96px);
+  /* Bigger, but still controlled so it doesn’t blow off the page */
+  font-size:clamp(60px, 8vmin, 140px);
   line-height:.92;
   text-shadow:0 2px 0 rgba(0,0,0,.35), 0 24px 48px rgba(0,0,0,.5);
   mix-blend-mode:screen;
@@ -259,7 +260,7 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
 
 /* === FINAL LOCKED POSITIONS — PAGE 1 (cover) === */
 /* (logo scale baked into this transform so it’s bigger but stays placed) */
-#mag-page-1 .logo         { transform: translate(-203.84px, 14.5px) rotate(0deg) scale(1.15); transform-origin:center; will-change: transform; }
+#mag-page-1 .logo         #mag-page-1 .logo { transform: translate(-203.84px, 14.5px) rotate(0deg) scale(1.84); transform-origin:center; will-change: transform; }
 #mag-page-1 .ribbon       { transform: translate(-31.5px, 5px) rotate(333deg);    will-change: transform; }
 #mag-page-1 .feature      { transform: translate(82.5px, -99px) rotate(0deg);     will-change: transform; }
 #mag-page-1 .feature-name { transform: translate(-136px, 57.5px) rotate(0deg);    will-change: transform; }
@@ -278,4 +279,50 @@ a:hover{ text-shadow:0 0 10px var(--glow), 0 0 24px var(--glow); transform:trans
   inset: 0;
   background: radial-gradient(circle, rgba(0,0,0,0) 65%, rgba(0,0,0,0.55) 100%);
   pointer-events: none;
+}
+/* in your CSS (already ok if you have it) */
+.hot {
+  color: var(--glow, #ff2e9b);
+  font-weight: 800;
+  text-shadow: 0 0 .6em color-mix(in oklab, var(--glow, #ff2e9b), #fff 20%);
+}
+
+/* === Global responsive scaling for ALL pages === /
+:root{
+  / your design size in pixels (whatever you laid out against) /
+  --design-w: 1080;
+  --design-h: 1440;
+}
+
+/ Your page container (use the class that wraps a page) /
+.frame{
+  width: var(--design-w);
+  height: var(--design-h);
+  transform-origin: top left;          / important so scaling is predictable /
+}
+
+/ Center the page and prevent mobile overflow /
+.stage{ 
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+/ Responsive: scale the whole frame to fit the mobile viewport /
+@media (max-width: 900px){
+  .frame{
+    / Fit by whichever side is tighter: width or height /
+    transform: scale(
+      calc(min(100vw / var(--design-w), 100svh / var(--design-h)))
+    );
+  }
+}
+
+/ Optional: nicer text wrapping on narrow screens (helps long titles) */
+@media (max-width: 600px){
+  .frame h1, .frame .title, .frame .logo{
+    text-wrap: balance;
+    hyphens: auto;
+  }
 }

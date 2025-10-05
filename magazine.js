@@ -1,4 +1,4 @@
-// magazine.js — page flip + scoped drag/rotate + per-page persistence + export CSS
+// magazine.js — page flip + scoped drag/rotate + per-page persistence
 console.log("✅ magazine.js loaded");
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -190,43 +190,8 @@ document.addEventListener("DOMContentLoaded", () => {
       saveMap(map);
     });
 
-    // ===== Export CSS button (optional: hard-code final positions) =====
-    (function mountExportButton(){
-      if (document.getElementById('export-css-btn')) return;
-      const btn = document.createElement('button');
-      btn.id = 'export-css-btn';
-      btn.textContent = 'Export CSS';
-      Object.assign(btn.style, {
-        position:'fixed', right:'14px', bottom:'14px', zIndex:9999,
-        padding:'10px 14px', borderRadius:'10px',
-        border:'1px solid rgba(255,255,255,.2)',
-        background:'rgba(15,10,25,.85)', color:'#fff',
-        fontWeight:'800', letterSpacing:'.08em', textTransform:'uppercase',
-        cursor:'pointer', boxShadow:'0 8px 24px rgba(0,0,0,.35)'
-      });
-      btn.addEventListener('click', async () => {
-        const lines = ['/* === Exported from Witch Weekly (Page 1 placements) === */'];
-        document.querySelectorAll('#mag-page-1 .draggable').forEach(el => {
-          const x = parseFloat(el.getAttribute('data-x')) || 0;
-          const y = parseFloat(el.getAttribute('data-y')) || 0;
-          const rot = parseFloat(el.getAttribute('data-rot')) || 0;
-          let sel = el.id ? `#${el.id}` : `#mag-page-1 ${[...el.classList].filter(c=>c!=='draggable').map(c=>'.'+c).join('') || el.tagName.toLowerCase()}`;
-          lines.push(`${sel} { transform: translate(${x}px, ${y}px) rotate(${rot}deg); }`);
-        });
-        const css = lines.join('\n');
-        try {
-          await navigator.clipboard.writeText(css);
-          btn.textContent = 'Copied!';
-          setTimeout(()=>btn.textContent='Export CSS', 1200);
-        } catch {
-          const w = window.open('', '_blank');
-          w.document.write(`<pre>${css.replace(/[<>&]/g, s => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[s]))}</pre>`);
-          w.document.close();
-        }
-      });
-      document.body.appendChild(btn);
-    })();
-  };
+    // (Export CSS button intentionally removed for launch)
+  }; // ✅ this closes script.onload
 
   document.body.appendChild(script);
 
@@ -253,3 +218,99 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// === Hot-pink just for two phrases on page 1 ===
+(function () {
+  const ROOT = document.querySelector('#mag-page-1'); // scope to page 1 only
+  if (!ROOT) return;
+
+  // Build a case-insensitive regex that also handles Wysteria’s / Wysteria's
+  const phrases = [
+    'from coffins to catastrphe',          // current spelling
+    'from coffins to catastrophe',         // in case you fix it
+    'the race for wysteria’s newest keepers',
+    "the race for wysteria's newest keepers"
+  ];
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re  = new RegExp(phrases.map(esc).join('|'), 'gi');
+
+  // Walk text nodes and wrap matches
+  const walker = document.createTreeWalker(ROOT, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      // skip empty/whitespace, and anything already inside .hot
+      if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+      if (node.parentElement && node.parentElement.closest('.hot')) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+
+  const targets = [];
+  let n; while ((n = walker.nextNode())) { if (re.test(n.nodeValue)) targets.push(n); }
+
+  targets.forEach(textNode => {
+    const wrapper = document.createElement('span');
+    wrapper.innerHTML = textNode.nodeValue.replace(re, m => `<span class="hot">${m}</span>`);
+    textNode.parentNode.replaceChild(wrapper, textNode);
+  });
+})();
+
+/* ======= Witch Weekly: mobile fixed-layout lock (append-only) ======= */
+(function mobileFixedLayout() {
+  // 1) Force a stable viewport width so vw/vmin don’t shrink on phones.
+  //    (Done via JS so you don't edit index.html)
+  const DESKTOP_PAGE_WIDTH = 1800; // pick your “looks perfect on PC” width
+  (function ensureViewportMeta() {
+    let meta = document.querySelector('meta[name="viewport"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'viewport');
+      document.head.appendChild(meta);
+    }
+    // Prevent auto-zoom/font-boost; fix width so CSS clamp(..., vw, ...) stays identical
+    meta.setAttribute(
+      'content',
+      `width=${DESKTOP_PAGE_WIDTH}, initial-scale=1.0, maximum-scale=1.0, user-scalable=no`
+    );
+  })();
+
+  // 2) Prevent iOS text auto-enlarging (no CSS file edits — inject a tiny style).
+  (function injectNoBoostStyle() {
+    if (document.getElementById('ww-mobile-lock-style')) return;
+    const style = document.createElement('style');
+    style.id = 'ww-mobile-lock-style';
+    style.textContent = `
+      html { -webkit-text-size-adjust: 100%; }
+    `;
+    document.head.appendChild(style);
+  })();
+
+  // 3) Scale the whole .frame as one unit on small screens (no reflow).
+  const frame = document.querySelector('.frame');
+  if (!frame) return;
+
+  // Measure your current PC layout ONCE as the “truth”.
+  // (Use a microtask to ensure styles have applied.)
+  queueMicrotask(() => {
+    const rect = frame.getBoundingClientRect();
+    const BASE_W = Math.max(1, Math.round(rect.width));
+    const BASE_H = Math.max(1, Math.round(rect.height));
+
+    // Keep scale origin consistent with magazine feel.
+    frame.style.transformOrigin = 'top center';
+
+    function fit() {
+      // If the phone screen is smaller than the desktop “truth”, scale down uniformly.
+      const scaleX = (window.innerWidth - 2) / BASE_W;
+      const scaleY = (window.innerHeight - 2) / BASE_H;
+      const scale = Math.min(scaleX, scaleY, 1); // never upscale past 1 on desktop
+      frame.style.transform = `scale(${isFinite(scale) ? scale : 1})`;
+    }
+
+    window.addEventListener('resize', fit, { passive: true });
+    window.addEventListener('orientationchange', fit, { passive: true });
+    fit();
+    // a second pass helps some mobile browsers after address-bar hide/show
+    setTimeout(fit, 0);
+    setTimeout(fit, 300);
+  });
+})();
